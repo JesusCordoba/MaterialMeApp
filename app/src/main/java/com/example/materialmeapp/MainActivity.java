@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ArrayList<Sport> mSportsData;
     private SportsAdapter mAdapter;
-    private ArrayList<String> delSports;
     int gridColumnCount;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -50,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
             gridColumnCount = getResources().getInteger(R.integer.grid_column_count_v);
         }
 
-        delSports = new ArrayList<>();
-
         // Initialize the RecyclerView.
         mRecyclerView = findViewById(R.id.recyclerView);
 
@@ -68,21 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the data.
         initializeData();
-
-        if (savedInstanceState != null) {
-            delSports = savedInstanceState.getStringArrayList("delete");
-            for (int i = 0; i < mSportsData.size(); i++) {
-
-                for (int j = 0; j < delSports.size(); j++) {
-                    if (mSportsData.get(i).getTitle().equals(delSports.get(j))){
-                        Log.d(LOG_TAG, mSportsData.get(i).getTitle() + " : " + delSports.get(j));
-                        mSportsData.remove(i);
-                        mAdapter.notifyItemRemoved(i);
-                    }
-                }
-
-            }
-        }
 
         // Helper class for creating swipe to dismiss and drag and drop
         // functionality.
@@ -123,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder,
                                  int direction) {
-                delSports.add(mSportsData.get(viewHolder.getAdapterPosition()).getTitle());
                 // Remove the item from the dataset.
                 mSportsData.remove(viewHolder.getAdapterPosition());
 
@@ -172,14 +153,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void resetSports(View view) {
         initializeData();
-        delSports.removeAll(delSports);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        //guardar numero de columnas
-        outState.putInt("grid", gridColumnCount);
-        outState.putStringArrayList("delete" , delSports);
-        super.onSaveInstanceState(outState);
-    }
+
 }
